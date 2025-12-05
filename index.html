@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据可视化第5章 - 交互式可视化网站</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .visualization-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .visualization-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        .section-title {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-group label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .control-group select, .control-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        /* 数据编辑区域样式 */
+        .visualization-content {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .chart-area {
+            flex: 2;
+            min-width: 0;
+        }
+        
+        .data-editor {
+            flex: 1;
+            min-width: 300px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .data-editor h3 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        
+        .data-table th {
+            background: #667eea;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-size: 12px;
+        }
+        
+        .data-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            font-size: 12px;
+        }
+        
+        .data-table input {
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .data-table input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        .editor-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .editor-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .editor-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .editor-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .editor-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .nav-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .visualization-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>数据可视化第5章</h1>
+            <p>交互式可视化展示 - 基于matplotlib代码转换</p>
+        </div>
+        
+        <div class="nav-menu">
+            <button class="nav-btn active" onclick="showSection('intro', event)">简介</button>
+            <button class="nav-btn" onclick="showSection('product-sales', event)">产品销售额分析</button>
+            <button class="nav-btn" onclick="showSection('pet-ownership', event)">养猫养狗人群比例</button>
+            <button class="nav-btn" onclick="showSection('douyin-analysis', event)">抖音用户分析</button>
+            <button class="nav-btn" onclick="showSection('temperature-precipitation', event)">气温与降水量</button>
+            <button class="nav-btn" onclick="showSection('subplot-layouts', event)">子图布局示例</button>
+        </div>
+        
+        <!-- 简介部分 -->
+        <div id="intro" class="visualization-section active">
+            <h2 class="section-title">数据可视化第5章简介</h2>
+            <div class="description">
+                <p>本网站展示了第5章中的所有数据可视化案例，将原有的matplotlib代码转换为交互式网页图表。</p>
+                <p>包含以下主要内容：</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>绘制固定区域的子图</li>
+                    <li>绘制自定义区域的子图</li>
+                    <li>共享子图的坐标轴</li>
+                    <li>子图的布局优化</li>
+                </ul>
+                <p style="margin-top: 20px;">点击上方导航按钮查看不同的可视化案例。</p>
+            </div>
+        </div>
+        
+        <!-- 产品销售额分析 -->
+        <div id="product-sales" class="visualization-section">
+            <h2 class="section-title">产品A与产品B销售额分析</h2>
+            <div class="description">
+                <p>展示某工厂产品A与产品B去年的销售额对比分析，包含折线图和饼图。</p>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="chartType">图表类型：</label>
+                    <select id="chartType" onchange="updateProductSalesChart()">
+                        <option value="line">折线图</option>
+                        <option value="bar">柱状图</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="showAnnotations">显示数值：</label>
+                    <input type="checkbox" id="showAnnotations" checked onchange="updateProductSalesChart()">
+                </div>
+            </div>
+            <div class="visualization-content">
+                <div class="chart-area">
+                    <div id="productSalesChart" class="chart-container"></div>
+                </div>
+                <div class="data-editor">
+                    <h3>数据编辑</h3>
+                    <table class="data-table" id="productSalesTable">
+                        <thead>
+                            <tr>
+                                <th>月份</th>
+                                <th>产品A</th>
+                                <th>产品B</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productSalesTableBody">
+                            <!-- 表格数据将由JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                    <div class="editor-buttons">
+                        <button class="editor-btn primary" onclick="applyProductSalesData()">应用数据</button>
+                        <button class="editor-btn secondary" onclick="resetProductSalesData()">重置数据</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 养猫养狗人群比例 -->
+        <div id="pet-ownership" class="visualization-section">
+            <h2 class="section-title">部分国家养猫与养狗人群比例分析</h2>
+            <div class="description">
+                <p>比较不同国家养猫和养狗人群的比例分布情况。</p>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="countryFilter">国家筛选：</label>
+                    <select id="countryFilter" onchange="updatePetOwnershipChart()">
+                        <option value="all">全部国家</option>
+                        <option value="asia">亚洲国家</option>
+                        <option value="europe">欧美国家</option>
+                    </select>
+                </div>
+            </div>
+            <div class="visualization-content">
+                <div class="chart-area">
+                    <div id="petOwnershipChart" class="chart-container"></div>
+                </div>
+                <div class="data-editor">
+                    <h3>数据编辑</h3>
+                    <table class="data-table" id="petOwnershipTable">
+                        <thead>
+                            <tr>
+                                <th>国家</th>
+                                <th>养猫比例</th>
+                                <th>养狗比例</th>
+                            </tr>
+                        </thead>
+                        <tbody id="petOwnershipTableBody">
+                            <!-- 表格数据将由JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                    <div class="editor-buttons">
+                        <button class="editor-btn primary" onclick="applyPetOwnershipData()">应用数据</button>
+                        <button class="editor-btn secondary" onclick="resetPetOwnershipData()">重置数据</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 抖音用户分析 -->
+        <div id="douyin-analysis" class="visualization-section">
+            <h2 class="section-title">2017年与2018年抖音用户分析</h2>
+            <div class="description">
+                <p>展示抖音用户在不同城市的增长倍数和地区分布比例。</p>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="yearSelect">年份选择：</label>
+                    <select id="yearSelect" onchange="updateDouyinChart()">
+                        <option value="both">2017 & 2018</option>
+                        <option value="2017">2017年</option>
+                        <option value="2018">2018年</option>
+                    </select>
+                </div>
+            </div>
+            <div class="visualization-content">
+                <div class="chart-area">
+                    <div id="douyinChart" class="chart-container"></div>
+                </div>
+                <div class="data-editor">
+                    <h3>数据编辑</h3>
+                    <table class="data-table" id="douyinTable">
+                        <thead>
+                            <tr>
+                                <th>城市类型</th>
+                                <th>增长倍数</th>
+                                <th>2017年分布</th>
+                                <th>2018年分布</th>
+                            </tr>
+                        </thead>
+                        <tbody id="douyinTableBody">
+                            <!-- 表格数据将由JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                    <div class="editor-buttons">
+                        <button class="editor-btn primary" onclick="applyDouyinData()">应用数据</button>
+                        <button class="editor-btn secondary" onclick="resetDouyinData()">重置数据</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 气温与降水量 -->
+        <div id="temperature-precipitation" class="visualization-section">
+            <h2 class="section-title">某地区全年平均气温与降水量、蒸发量的关系</h2>
+            <div class="description">
+                <p>展示某地区全年平均气温与降水量、蒸发量的变化关系，使用双Y轴图表。</p>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="dataType">数据类型：</label>
+                    <select id="dataType" onchange="updateTemperatureChart()">
+                        <option value="all">全部数据</option>
+                        <option value="temperature">仅气温</option>
+                        <option value="water">仅水量数据</option>
+                    </select>
+                </div>
+            </div>
+            <div class="visualization-content">
+                <div class="chart-area">
+                    <div id="temperatureChart" class="chart-container"></div>
+                </div>
+                <div class="data-editor">
+                    <h3>数据编辑</h3>
+                    <table class="data-table" id="temperatureTable">
+                        <thead>
+                            <tr>
+                                <th>月份</th>
+                                <th>气温(°C)</th>
+                                <th>降水量(ml)</th>
+                                <th>蒸发量(ml)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="temperatureTableBody">
+                            <!-- 表格数据将由JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                    <div class="editor-buttons">
+                        <button class="editor-btn primary" onclick="applyTemperatureData()">应用数据</button>
+                        <button class="editor-btn secondary" onclick="resetTemperatureData()">重置数据</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 子图布局示例 -->
+        <div id="subplot-layouts" class="visualization-section">
+            <h2 class="section-title">子图布局示例</h2>
+            <div class="description">
+                <p>展示不同的子图布局方式，包括固定区域布局和自定义布局。</p>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="layoutType">布局类型：</label>
+                    <select id="layoutType" onchange="updateSubplotLayouts()">
+                        <option value="basic">基本子图</option>
+                        <option value="custom">自定义布局</option>
+                        <option value="shared">共享坐标轴</option>
+                    </select>
+                </div>
+            </div>
+            <div class="visualization-content">
+                <div class="chart-area">
+                    <div id="subplotLayoutsChart" class="chart-container"></div>
+                </div>
+                <div class="data-editor">
+                    <h3>数据编辑</h3>
+                    <table class="data-table" id="subplotDataTable">
+                        <thead>
+                            <tr>
+                                <th>子图编号</th>
+                                <th>X数据</th>
+                                <th>Y数据</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subplotDataTableBody">
+                            <!-- 表格数据将由JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                    <div class="editor-buttons">
+                        <button class="editor-btn primary" onclick="applySubplotData()">应用数据</button>
+                        <button class="editor-btn secondary" onclick="resetSubplotData()">重置数据</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="visualizations.js"></script>
+    <script>
+        function showSection(sectionId) {
+            // 隐藏所有部分
+            document.querySelectorAll('.visualization-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 移除所有按钮的active类
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 显示选中的部分
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 添加active类到对应的按钮
+            event.target.classList.add('active');
+            
+            // 根据选中的部分更新图表
+            switch(sectionId) {
+                case 'product-sales':
+                    updateProductSalesChart();
+                    break;
+                case 'pet-ownership':
+                    updatePetOwnershipChart();
+                    break;
+                case 'douyin-analysis':
+                    updateDouyinChart();
+                    break;
+                case 'temperature-precipitation':
+                    updateTemperatureChart();
+                    break;
+                case 'subplot-layouts':
+                    updateSubplotLayouts();
+                    break;
+            }
+        }
+        
+        // 页面加载时初始化第一个图表
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProductSalesChart();
+        });
+    </script>
+</body>
+</html>
