@@ -42,6 +42,8 @@ let currentData = JSON.parse(JSON.stringify(initialData));
 // 初始化产品销售额数据表格
 function initProductSalesTable() {
     const tbody = document.getElementById('productSalesTableBody');
+    if (!tbody) return;
+    
     tbody.innerHTML = '';
     
     currentData.productSales.months.forEach((month, index) => {
@@ -68,7 +70,7 @@ function applyProductSalesData() {
     });
     
     updateProductSalesChart();
-    alert('产品销售额数据已更新！');
+    showMessage('产品销售额数据已更新！');
 }
 
 // 重置产品销售额数据
@@ -76,7 +78,7 @@ function resetProductSalesData() {
     currentData.productSales = JSON.parse(JSON.stringify(initialData.productSales));
     initProductSalesTable();
     updateProductSalesChart();
-    alert('产品销售额数据已重置！');
+    showMessage('产品销售额数据已重置！');
 }
 
 // ===== 养猫养狗人群比例 =====
@@ -84,6 +86,8 @@ function resetProductSalesData() {
 // 初始化养猫养狗人群比例数据表格
 function initPetOwnershipTable() {
     const tbody = document.getElementById('petOwnershipTableBody');
+    if (!tbody) return;
+    
     tbody.innerHTML = '';
     
     currentData.petOwnership.countries.forEach((country, index) => {
@@ -110,7 +114,7 @@ function applyPetOwnershipData() {
     });
     
     updatePetOwnershipChart();
-    alert('养猫养狗人群比例数据已更新！');
+    showMessage('养猫养狗人群比例数据已更新！');
 }
 
 // 重置养猫养狗人群比例数据
@@ -118,7 +122,7 @@ function resetPetOwnershipData() {
     currentData.petOwnership = JSON.parse(JSON.stringify(initialData.petOwnership));
     initPetOwnershipTable();
     updatePetOwnershipChart();
-    alert('养猫养狗人群比例数据已重置！');
+    showMessage('养猫养狗人群比例数据已重置！');
 }
 
 // ===== 抖音用户分析 =====
@@ -126,6 +130,8 @@ function resetPetOwnershipData() {
 // 初始化抖音用户分析数据表格
 function initDouyinTable() {
     const tbody = document.getElementById('douyinTableBody');
+    if (!tbody) return;
+    
     tbody.innerHTML = '';
     
     currentData.douyin.cities.forEach((city, index) => {
@@ -153,7 +159,7 @@ function applyDouyinData() {
     });
     
     updateDouyinChart();
-    alert('抖音用户分析数据已更新！');
+    showMessage('抖音用户分析数据已更新！');
 }
 
 // 重置抖音用户分析数据
@@ -161,7 +167,7 @@ function resetDouyinData() {
     currentData.douyin = JSON.parse(JSON.stringify(initialData.douyin));
     initDouyinTable();
     updateDouyinChart();
-    alert('抖音用户分析数据已重置！');
+    showMessage('抖音用户分析数据已重置！');
 }
 
 // ===== 气温与降水量 =====
@@ -169,6 +175,8 @@ function resetDouyinData() {
 // 初始化气温与降水量数据表格
 function initTemperatureTable() {
     const tbody = document.getElementById('temperatureTableBody');
+    if (!tbody) return;
+    
     tbody.innerHTML = '';
     
     currentData.temperature.months.forEach((month, index) => {
@@ -196,7 +204,7 @@ function applyTemperatureData() {
     });
     
     updateTemperatureChart();
-    alert('气温与降水量数据已更新！');
+    showMessage('气温与降水量数据已更新！');
 }
 
 // 重置气温与降水量数据
@@ -204,7 +212,7 @@ function resetTemperatureData() {
     currentData.temperature = JSON.parse(JSON.stringify(initialData.temperature));
     initTemperatureTable();
     updateTemperatureChart();
-    alert('气温与降水量数据已重置！');
+    showMessage('气温与降水量数据已重置！');
 }
 
 // ===== 子图布局示例 =====
@@ -212,6 +220,8 @@ function resetTemperatureData() {
 // 初始化子图数据表格
 function initSubplotTable() {
     const tbody = document.getElementById('subplotDataTableBody');
+    if (!tbody) return;
+    
     tbody.innerHTML = '';
     
     currentData.subplotData.subplots.forEach((subplot, subplotIndex) => {
@@ -241,7 +251,7 @@ function applySubplotData() {
     });
     
     updateSubplotLayouts();
-    alert('子图数据已更新！');
+    showMessage('子图数据已更新！');
 }
 
 // 重置子图数据
@@ -249,321 +259,20 @@ function resetSubplotData() {
     currentData.subplotData = JSON.parse(JSON.stringify(initialData.subplotData));
     initSubplotTable();
     updateSubplotLayouts();
-    alert('子图数据已重置！');
-}
-function applyPetOwnershipData() {
-    const inputs = document.querySelectorAll('#petOwnershipTableBody input');
-    
-    inputs.forEach(input => {
-        const index = parseInt(input.getAttribute('data-index'));
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value) || 0;
-        
-        currentData.petOwnership[type][index] = value;
-    });
-    
-    updatePetOwnershipChart();
-    alert('养猫养狗人群比例数据已更新！');
-}
-
-// 重置养猫养狗人群比例数据
-function resetPetOwnershipData() {
-    currentData.petOwnership = JSON.parse(JSON.stringify(initialData.petOwnership));
-    initPetOwnershipTable();
-    updatePetOwnershipChart();
-    alert('养猫养狗人群比例数据已重置！');
-}
-
-// ===== 抖音用户分析 =====
-
-// 初始化抖音用户分析数据表格
-function initDouyinTable() {
-    const tbody = document.getElementById('douyinTableBody');
-    tbody.innerHTML = '';
-    
-    currentData.douyin.cities.forEach((city, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${city}</td>
-            <td><input type="number" value="${currentData.douyin.growthMultiples[index]}" data-index="${index}" data-type="growthMultiples"></td>
-            <td><input type="number" value="${currentData.douyin.distribution2017[index]}" data-index="${index}" data-type="distribution2017"></td>
-            <td><input type="number" value="${currentData.douyin.distribution2018[index]}" data-index="${index}" data-type="distribution2018"></td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// 应用抖音用户分析数据
-function applyDouyinData() {
-    const inputs = document.querySelectorAll('#douyinTableBody input');
-    
-    inputs.forEach(input => {
-        const index = parseInt(input.getAttribute('data-index'));
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value) || 0;
-        
-        currentData.douyin[type][index] = value;
-    });
-    
-    updateDouyinChart();
-    alert('抖音用户分析数据已更新！');
-}
-
-// 重置抖音用户分析数据
-function resetDouyinData() {
-    currentData.douyin = JSON.parse(JSON.stringify(initialData.douyin));
-    initDouyinTable();
-    updateDouyinChart();
-    alert('抖音用户分析数据已重置！');
-}
-
-// ===== 气温与降水量 =====
-
-// 初始化气温与降水量数据表格
-function initTemperatureTable() {
-    const tbody = document.getElementById('temperatureTableBody');
-    tbody.innerHTML = '';
-    
-    currentData.temperature.months.forEach((month, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${month}</td>
-            <td><input type="number" step="0.1" value="${currentData.temperature.temperature[index]}" data-index="${index}" data-type="temperature"></td>
-            <td><input type="number" step="0.1" value="${currentData.temperature.precipitation[index]}" data-index="${index}" data-type="precipitation"></td>
-            <td><input type="number" step="0.1" value="${currentData.temperature.evaporation[index]}" data-index="${index}" data-type="evaporation"></td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// 应用气温与降水量数据
-function applyTemperatureData() {
-    const inputs = document.querySelectorAll('#temperatureTableBody input');
-    
-    inputs.forEach(input => {
-        const index = parseInt(input.getAttribute('data-index'));
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value) || 0;
-        
-        currentData.temperature[type][index] = value;
-    });
-    
-    updateTemperatureChart();
-    alert('气温与降水量数据已更新！');
-}
-
-// 重置气温与降水量数据
-function resetTemperatureData() {
-    currentData.temperature = JSON.parse(JSON.stringify(initialData.temperature));
-    initTemperatureTable();
-    updateTemperatureChart();
-    alert('气温与降水量数据已重置！');
-}
-
-// ===== 子图布局示例 =====
-
-// 初始化子图数据表格
-function initSubplotTable() {
-    const tbody = document.getElementById('subplotDataTableBody');
-    tbody.innerHTML = '';
-    
-    currentData.subplotData.subplots.forEach((subplot, subplotIndex) => {
-        subplot.x.forEach((xVal, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>子图${subplotIndex + 1}</td>
-                <td><input type="number" value="${xVal}" data-subplot="${subplotIndex}" data-index="${index}" data-type="x"></td>
-                <td><input type="number" value="${subplot.y[index]}" data-subplot="${subplotIndex}" data-index="${index}" data-type="y"></td>
-            `;
-            tbody.appendChild(row);
-        });
-    });
-}
-
-// 应用子图数据
-function applySubplotData() {
-    const inputs = document.querySelectorAll('#subplotDataTableBody input');
-    
-    inputs.forEach(input => {
-        const subplotIndex = parseInt(input.getAttribute('data-subplot'));
-        const index = parseInt(input.getAttribute('data-index'));
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value) || 0;
-        
-        currentData.subplotData.subplots[subplotIndex][type][index] = value;
-    });
-    
-    updateSubplotLayouts();
-    alert('子图数据已更新！');
-}
-
-// 重置子图数据
-function resetSubplotData() {
-    currentData.subplotData = JSON.parse(JSON.stringify(initialData.subplotData));
-    initSubplotTable();
-    updateSubplotLayouts();
-    alert('子图数据已重置！');
-}
-function applyPetOwnershipData() {
-    const inputs = document.querySelectorAll('#petOwnershipTableBody input');
-    
-    inputs.forEach(input => {
-        const index = parseInt(input.getAttribute('data-index'));
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value) || 0;
-        
-        currentData.petOwnership[type][index] = value;
-    });
-    
-    updatePetOwnershipChart();
-    alert('养猫养狗人群比例数据已更新！');
-}
-
-// 重置养猫养狗人群比例数据
-function resetPetOwnershipData() {
-    currentData.petOwnership = JSON.parse(JSON.stringify(initialData.petOwnership));
-    initPetOwnershipTable();
-    updatePetOwnershipChart();
-    alert('养猫养狗人群比例数据已重置！');
-}
-
-// ===== 抖音用户分析 =====
-
-// 初始化抖音用户分析数据表格
-function initDouyinTable() {
-    const tbody = document.getElementById('douyinTableBody');
-    tbody.innerHTML = '';
-    
-    currentData.douyin.cities.forEach((city, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${city}</td>
-            <td><input type="number" value="${currentData.douyin.growthMultiples[index]}" data-index="${index}" data-type="growthMultiples"></td>
-            <td><input type="number" value="${currentData.douyin.distribution2017[index]}" data-index="${index}" data-type="distribution2017"></td>
-            <td><input type="number" value="${currentData.douyin.distribution2018[index]}" data-index="${index}" data-type="distribution2018"></td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// 应用抖音用户分析数据
-function applyDouyinData() {
-    const inputs = document.querySelectorAll('#douyinTableBody input');
-    
-    inputs.forEach(input => {
-        const index = parseInt(input.getAttribute('data-index'));
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value) || 0;
-        
-        currentData.douyin[type][index] = value;
-    });
-    
-    updateDouyinChart();
-    alert('抖音用户分析数据已更新！');
-}
-
-// 重置抖音用户分析数据
-function resetDouyinData() {
-    currentData.douyin = JSON.parse(JSON.stringify(initialData.douyin));
-    initDouyinTable();
-    updateDouyinChart();
-    alert('抖音用户分析数据已重置！');
-}
-
-// ===== 气温与降水量 =====
-
-// 初始化气温与降水量数据表格
-function initTemperatureTable() {
-    const tbody = document.getElementById('temperatureTableBody');
-    tbody.innerHTML = '';
-    
-    currentData.temperature.months.forEach((month, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${month}</td>
-            <td><input type="number" step="0.1" value="${currentData.temperature.temperature[index]}" data-index="${index}" data-type="temperature"></td>
-            <td><input type="number" step="0.1" value="${currentData.temperature.precipitation[index]}" data-index="${index}" data-type="precipitation"></td>
-            <td><input type="number" step="0.1" value="${currentData.temperature.evaporation[index]}" data-index="${index}" data-type="evaporation"></td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// 应用气温与降水量数据
-function applyTemperatureData() {
-    const inputs = document.querySelectorAll('#temperatureTableBody input');
-    
-    inputs.forEach(input => {
-        const index = parseInt(input.getAttribute('data-index'));
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value) || 0;
-        
-        currentData.temperature[type][index] = value;
-    });
-    
-    updateTemperatureChart();
-    alert('气温与降水量数据已更新！');
-}
-
-// 重置气温与降水量数据
-function resetTemperatureData() {
-    currentData.temperature = JSON.parse(JSON.stringify(initialData.temperature));
-    initTemperatureTable();
-    updateTemperatureChart();
-    alert('气温与降水量数据已重置！');
-}
-
-// ===== 子图布局示例 =====
-
-// 初始化子图数据表格
-function initSubplotTable() {
-    const tbody = document.getElementById('subplotDataTableBody');
-    tbody.innerHTML = '';
-    
-    currentData.subplotData.subplots.forEach((subplot, subplotIndex) => {
-        subplot.x.forEach((xVal, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>子图${subplotIndex + 1}</td>
-                <td><input type="number" value="${xVal}" data-subplot="${subplotIndex}" data-index="${index}" data-type="x"></td>
-                <td><input type="number" value="${subplot.y[index]}" data-subplot="${subplotIndex}" data-index="${index}" data-type="y"></td>
-            `;
-            tbody.appendChild(row);
-        });
-    });
-}
-
-// 应用子图数据
-function applySubplotData() {
-    const inputs = document.querySelectorAll('#subplotDataTableBody input');
-    
-    inputs.forEach(input => {
-        const subplotIndex = parseInt(input.getAttribute('data-subplot'));
-        const index = parseInt(input.getAttribute('data-index'));
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value) || 0;
-        
-        currentData.subplotData.subplots[subplotIndex][type][index] = value;
-    });
-    
-    updateSubplotLayouts();
-    alert('子图数据已更新！');
-}
-
-// 重置子图数据
-function resetSubplotData() {
-    currentData.subplotData = JSON.parse(JSON.stringify(initialData.subplotData));
-    initSubplotTable();
-    updateSubplotLayouts();
-    alert('子图数据已重置！');
+    showMessage('子图数据已重置！');
 }
 
 // ===== 图表更新函数 =====
 
 // 1. 产品销售额分析图表
 function updateProductSalesChart() {
-    const chartType = document.getElementById('chartType').value;
-    const showAnnotations = document.getElementById('showAnnotations').checked;
+    const chartTypeElement = document.getElementById('chartType');
+    const showAnnotationsElement = document.getElementById('showAnnotations');
+    
+    if (!chartTypeElement || !document.getElementById('productSalesChart')) return;
+    
+    const chartType = chartTypeElement.value;
+    const showAnnotations = showAnnotationsElement ? showAnnotationsElement.checked : false;
     
     let layout = {
         title: '产品A与产品B的销售额分析',
@@ -643,7 +352,10 @@ function updateProductSalesChart() {
 
 // 2. 养猫养狗人群比例图表
 function updatePetOwnershipChart() {
-    const countryFilter = document.getElementById('countryFilter').value;
+    const countryFilterElement = document.getElementById('countryFilter');
+    if (!countryFilterElement || !document.getElementById('petOwnershipChart')) return;
+    
+    const countryFilter = countryFilterElement.value;
     
     let filteredCountries = currentData.petOwnership.countries;
     let filteredCatOwners = currentData.petOwnership.catOwners;
@@ -695,14 +407,17 @@ function updatePetOwnershipChart() {
 
 // 3. 抖音用户分析图表
 function updateDouyinChart() {
-    const yearSelect = document.getElementById('yearSelect').value;
+    const yearSelectElement = document.getElementById('yearSelect');
+    if (!yearSelectElement || !document.getElementById('douyinChart')) return;
+    
+    const yearSelect = yearSelectElement.value;
     
     // 创建子图布局
     const layout = {
         grid: { rows: 2, columns: 2, pattern: 'independent' },
-        height: 450,  // 增加高度以提供更多空间
+        height: 450,
         showlegend: false,
-        margin: { t: 100, r: 40, b: 80, l: 80 }  // 大幅增加边距，防止字符重叠
+        margin: { t: 100, r: 40, b: 80, l: 80 }
     };
     
     const traces = [];
@@ -724,13 +439,13 @@ function updateDouyinChart() {
     layout.xaxis1 = { 
         domain: [0, 1], 
         anchor: 'y1', 
-        title: { text: '城市类型', standoff: 25 },  // 增加标题间距
-        tickvals: currentData.douyin.cities,  // 设置tick值
-        ticktext: simplifiedCities,  // 使用简化的标签
-        tickangle: 0,  // 不倾斜，使用简化标签
+        title: { text: '城市类型', standoff: 25 },
+        tickvals: currentData.douyin.cities,
+        ticktext: simplifiedCities,
+        tickangle: 0,
         automargin: true,
         tickmode: 'array',
-        tickfont: { size: 12 },  // 调整标签字体大小
+        tickfont: { size: 12 },
         ticklen: 5,
         tickwidth: 2,
         ticks: 'outside',
@@ -740,25 +455,25 @@ function updateDouyinChart() {
     layout.yaxis1 = { 
         domain: [0.55, 1], 
         anchor: 'x1', 
-        title: { text: '增长倍数', standoff: 20 },  // 增加标题间距
+        title: { text: '增长倍数', standoff: 20 },
         automargin: true,
         tickfont: { size: 12 },
         gridcolor: 'rgba(0,0,0,0.1)',
         zeroline: false
     };
     layout.annotations = [{
-        x: 0.02,  // 移到左侧边缘
-        y: 0.98,  // 保持顶部位置
+        x: 0.02,
+        y: 0.98,
         xref: 'paper',
         yref: 'paper',
         text: '抖音2018vs2017人群增长倍数',
         showarrow: false,
-        font: { size: 16, weight: 'bold' },  // 适当调整字体大小
+        font: { size: 16, weight: 'bold' },
         bgcolor: 'rgba(255,255,255,0.9)',
         bordercolor: 'rgba(0,0,0,0.3)',
         borderwidth: 2,
-        borderpad: 4,  // 调整内边距
-        xanchor: 'left',  // 左对齐
+        borderpad: 4,
+        xanchor: 'left',
         yanchor: 'top'
     }];
     
@@ -782,8 +497,8 @@ function updateDouyinChart() {
             type: 'pie',
             name: '2017年分布',
             marker: { colors: ['#2F4F4F', '#FF0000', '#A9A9A9', '#FFD700', '#B0C4DE'] },
-            domain: { x: [0.05, 0.45], y: [0.05, 0.45] },  // 增加饼图边距
-            textposition: 'outside',  // 标签放在饼图外部
+            domain: { x: [0.05, 0.45], y: [0.05, 0.45] },
+            textposition: 'outside',
             textinfo: 'label+percent',
             insidetextorientation: 'radial',
             hovertemplate: '<b>%{label}</b><br>2017年: %{value}%<extra></extra>'
@@ -791,7 +506,7 @@ function updateDouyinChart() {
         
         layout.annotations.push({
             x: 0.25,
-            y: 0.28,  // 调整饼图标题位置
+            y: 0.28,
             xref: 'paper',
             yref: 'paper',
             text: '2017年抖音用户地区分布',
@@ -813,8 +528,8 @@ function updateDouyinChart() {
             type: 'pie',
             name: '2018年分布',
             marker: { colors: ['#2F4F4F', '#FF0000', '#A9A9A9', '#FFD700', '#B0C4DE'] },
-            domain: { x: [0.55, 0.95], y: [0.05, 0.45] },  // 增加饼图边距
-            textposition: 'outside',  // 标签放在饼图外部
+            domain: { x: [0.55, 0.95], y: [0.05, 0.45] },
+            textposition: 'outside',
             textinfo: 'label+percent',
             insidetextorientation: 'radial',
             hovertemplate: '<b>%{label}</b><br>2018年: %{value}%<extra></extra>'
@@ -822,7 +537,7 @@ function updateDouyinChart() {
         
         layout.annotations.push({
             x: 0.75,
-            y: 0.28,  // 调整饼图标题位置
+            y: 0.28,
             xref: 'paper',
             yref: 'paper',
             text: '2018年抖音用户地区分布',
@@ -842,7 +557,10 @@ function updateDouyinChart() {
 
 // 4. 气温与降水量图表
 function updateTemperatureChart() {
-    const dataType = document.getElementById('dataType').value;
+    const dataTypeElement = document.getElementById('dataType');
+    if (!dataTypeElement || !document.getElementById('temperatureChart')) return;
+    
+    const dataType = dataTypeElement.value;
     
     const traces = [];
     
@@ -900,7 +618,10 @@ function updateTemperatureChart() {
 
 // 5. 子图布局示例
 function updateSubplotLayouts() {
-    const layoutType = document.getElementById('layoutType').value;
+    const layoutTypeElement = document.getElementById('layoutType');
+    if (!layoutTypeElement || !document.getElementById('subplotLayoutsChart')) return;
+    
+    const layoutType = layoutTypeElement.value;
     
     let traces = [];
     let layout = { height: 400, showlegend: false };
@@ -1001,6 +722,14 @@ function updateSubplotLayouts() {
     Plotly.newPlot('subplotLayoutsChart', traces, layout);
 }
 
+// ===== 辅助函数 =====
+
+// 显示消息（替代alert）
+function showMessage(message) {
+    console.log(message);
+    // 可以添加更友好的消息显示方式，比如toast notification
+}
+
 // ===== 初始化函数 =====
 
 // 初始化所有数据表格
@@ -1013,7 +742,7 @@ function initAllDataTables() {
 }
 
 // 更新导航功能，添加数据表格初始化
-function showSection(sectionId) {
+function showSection(sectionId, event) {
     // 隐藏所有部分
     document.querySelectorAll('.visualization-section').forEach(section => {
         section.classList.remove('active');
@@ -1028,7 +757,9 @@ function showSection(sectionId) {
     document.getElementById(sectionId).classList.add('active');
     
     // 添加active类到对应的按钮
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
     
     // 根据选中的部分更新图表和初始化数据表格
     switch(sectionId) {
@@ -1055,13 +786,27 @@ function showSection(sectionId) {
     }
 }
 
+// 检查Plotly是否加载完成
+function waitForPlotly(callback) {
+    if (typeof Plotly !== 'undefined') {
+        callback();
+    } else {
+        setTimeout(() => waitForPlotly(callback), 100);
+    }
+}
+
 // 页面加载完成后初始化
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    waitForPlotly(function() {
         initAllDataTables();
         updateProductSalesChart();
     });
-} else {
-    initAllDataTables();
-    updateProductSalesChart();
-}
+});
+
+// 页面完全加载后的备用初始化
+window.addEventListener('load', function() {
+    if (typeof Plotly !== 'undefined') {
+        initAllDataTables();
+        updateProductSalesChart();
+    }
+});
